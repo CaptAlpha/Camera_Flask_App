@@ -218,8 +218,6 @@ def intro():
          if not os.path.isdir('static'):
                 os.mkdir('static')
 
-         if os.path.isfile("static/image.jpg"):
-                os.remove("static/image.jpg")
 
          return redirect(url_for('index'))
     return render_template('intro.html')
