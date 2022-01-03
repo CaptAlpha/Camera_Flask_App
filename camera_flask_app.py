@@ -6,7 +6,7 @@ import numpy as np
 from threading import Thread
 import face_recognition
 
-
+user_name = ""
 global capture,rec_frame, grey, switch, neg, face, rec, out 
 capture=0
 grey=0
@@ -31,7 +31,7 @@ app = Flask(__name__, template_folder='./templates')
 camera = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
-user_image = face_recognition.load_image_file("User\Arhit Bose Tagore.jpeg")
+user_image = face_recognition.load_image_file("static\image.jpg")
 user_face_encoding = face_recognition.face_encodings(user_image)[0]
 
 # Create arrays of known face encodings and their names
@@ -39,7 +39,7 @@ known_face_encodings = [
     user_face_encoding
 ]
 known_face_names = [
-    "Arhit"
+    "User"
 ]
 # Initialize some variables
 face_locations = []
@@ -204,12 +204,13 @@ def gen_frames():  # generate frame by frame from camera
             pass
 
 file = ""
-user_name = ""
+filepath=""
+user_name=""
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
-@app.route('/intro', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def intro():
     if request.method == 'POST':
          file = request.files['cover']
@@ -217,6 +218,15 @@ def intro():
 
          if not os.path.isdir('static'):
                 os.mkdir('static')
+
+         if os.path.isfile("static/image.jpg"):
+            os.remove("static/image.jpg") 
+        
+         filepath = os.path.join('static', file.filename)
+         newName = "static/image.jpg"
+
+         file.save(filepath)
+         fp = os.rename(filepath, newName)
 
 
          return redirect(url_for('index'))
