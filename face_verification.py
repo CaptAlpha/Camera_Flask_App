@@ -63,7 +63,6 @@ def verify_face():
             print(get_similarity(faces))
 
     cam.release()
-
     cv2.destroyAllWindows()
 
 verify_face()
