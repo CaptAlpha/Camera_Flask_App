@@ -39,17 +39,19 @@ def get_similarity(faces):
     return "Face Not Matched",score
 
 def verify_face():
+    global verification,color
     cam = cv2.VideoCapture(0)
-    cv2.namedWindow("test")
     while True:
         ret, frame = cam.read()
         if not ret:
             print("Failed to grab frame")
             break
 
-        cv2.imshow("Face", frame)
 
         k = cv2.waitKey(1)
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        fontScale = 1
+        thickness = 2
         if k%256 == 27:
             # ESC pressed
             print("Escape hit, closing...")
@@ -60,9 +62,20 @@ def verify_face():
             cv2.imwrite(img_name, frame)
             print("Written!")
             faces=[extract_face(image) for image in ['static\Photo.jpg','face.png']]
-            print(get_similarity(faces))
+            verification,confidence=get_similarity(faces)
+            if verification=='Face Matched':
+                color=(0,128,0)
+            elif verification=='Face Not Matched':
+                color=(48,48,255)
+        
+        textsize = cv2.getTextSize(verification, font, 1, 2)[0]
+        textX = int((frame.shape[1] - textsize[0]) / 2)
+        cv2.putText(frame,verification,(textX,400),font,fontScale,color,thickness,cv2.LINE_AA)
+        cv2.imshow("Face", frame)
 
     cam.release()
     cv2.destroyAllWindows()
 
+verification='Not verified'
+color = (255,191,0)
 verify_face()
